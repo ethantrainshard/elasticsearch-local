@@ -1,0 +1,32 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: mycluster
+spec:
+  version: 7.13.2
+  nodeSets:
+  - name: default
+    count: 1
+    config:
+      node.master: true
+      node.data: true
+      node.ingest: true
+      node.store.allow_mmap: false
+  http:
+    service:
+      spec:
+        type: NodePort
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: mykibana
+spec:
+  version: 7.13.2
+  count: 1
+  elasticsearchRef:
+    name: mycluster
+  http:
+    service:
+      spec:
+        type: NodePort
